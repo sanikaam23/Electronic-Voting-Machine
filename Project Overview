@@ -1,0 +1,53 @@
+This project is a Verilog implementation of a voting machine system, which is composed of multiple modules to handle button presses, vote logging, mode control, and the overall voting process. Below is an overview of each module and how they interact to create the complete system:
+
+1. buttonControl Module
+Purpose: This module detects valid button presses for a certain candidate's vote.
+Functionality:
+It counts the number of consecutive clock cycles where the button is pressed, ensuring the button press is deliberate and not accidental (debouncing).
+If the button is held for 11 clock cycles, the module registers a valid vote (valid_vote is set to 1).
+Inputs:
+clock: System clock signal.
+reset: Resets the counter.
+button: The button input signal for a specific candidate.
+Output:
+valid_vote: A signal indicating whether the button press was valid.
+2. voteLogger Module
+Purpose: This module logs votes for each candidate.
+Functionality:
+It increments the vote count for the corresponding candidate when a valid vote is detected and the system is in voting mode (mode == 0).
+Inputs:
+clock, reset, mode: Common control signals.
+cand1_vote_valid to cand4_vote_valid: Signals from the buttonControl module indicating valid votes for each candidate.
+Outputs:
+cand1_vote_recvd to cand4_vote_recvd: Vote counters for each candidate.
+3. modeControl Module
+Purpose: Controls the behavior of the LEDs based on the system's mode and displays the number of votes for each candidate.
+Functionality:
+In voting mode (mode == 0), it lights up the LEDs when any valid vote is cast.
+In display mode (mode == 1), it shows the vote count for a candidate based on which button is pressed.
+Inputs:
+clock, reset, mode, valid_vote_casted: Control signals.
+candidate1_vote to candidate4_vote: Vote counts for each candidate.
+candidate1_button_press to candidate4_button_press: Signals indicating button presses in display mode.
+Output:
+leds: The LED output representing either the vote count or an indication that a vote was cast.
+4. votingMachine Module
+Purpose: This is the top-level module that connects all the other modules together.
+Functionality:
+It instantiates four buttonControl modules, one voteLogger module, and one modeControl module.
+The buttonControl modules detect valid votes, the voteLogger module logs these votes, and the modeControl module manages the display of results via LEDs.
+Inputs:
+clock, reset, mode, button1, button2, button3, button4: Control signals and button inputs.
+Output:
+led: The LED output managed by the modeControl module.
+5. Testbench Module (test)
+Purpose: Simulates and tests the votingMachine module.
+Functionality:
+The testbench toggles the clock and applies different input scenarios to simulate button presses and mode changes.
+It monitors the led output and displays the values to verify the correct functionality of the voting machine.
+Setup:
+The testbench includes initial blocks to generate clock signals, reset conditions, and different voting scenarios.
+Project Summary
+This Verilog project simulates an electronic voting machine that allows users to cast votes for four different candidates. The system is designed with debouncing to ensure reliable vote counting, and it can operate in two modes: voting and display. The display mode shows the number of votes received by a candidate. The provided testbench verifies the system's operation by simulating various inputs and monitoring the corresponding outputs.
+
+The project structure efficiently divides the functionality into smaller, manageable modules, ensuring clarity and easier debugging.
