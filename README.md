@@ -1,1 +1,1 @@
-# Online-Voting-Machine
+# Electronic-Voting-Machine
